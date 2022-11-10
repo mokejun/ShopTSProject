@@ -1,9 +1,17 @@
 /**
  * @format
  */
+import {name as appName} from "./app.json";
+import MyErrorListener from "./config/MyErrorListener";
+import {startApp} from "core-native/src";
+import HomeView from "./module/HomeView";
 
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
-
-AppRegistry.registerComponent(appName, () => App);
+startApp({
+    registeredAppName: appName,
+    componentType: HomeView,
+    errorListener: new MyErrorListener(),
+    beforeRendering: () => {
+        console.log(`beforeRendering 先做一些处理`);
+    },
+    loggerConfig: {serverURL: "https://www.baidu.com", slowStartupThreshold: 10},
+});

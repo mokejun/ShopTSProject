@@ -2,8 +2,9 @@ import React, {useCallback, useEffect, useState} from "react";
 import {View, Text, TextInput, Button, ToastAndroid, Keyboard, StyleSheet, Dimensions, Touchable, TouchableOpacity, TouchableHighlight} from "react-native";
 import {useDispatch, useStore, connect, useSelector} from "react-redux";
 import {RootState} from "../config/RootState";
-import {useAction, useUnaryAction, useBinaryAction, useObjectKeyAction, useLoadingStatus, showLoading, loadingAction} from "core-native/src";
+import {useAction, useUnaryAction, useBinaryAction, useObjectKeyAction, useLoadingStatus, showLoading, loadingAction, Loading} from "core-native/src";
 import {loginActions} from "../module/LoginView";
+import LoadingComponent from "./LoadingComponent";
 
 const Login = (props: any) => {
     const {navigation} = props;
@@ -11,10 +12,9 @@ const Login = (props: any) => {
     const [userPwd, setUserPwd] = useState("");
 
     const action = useAction(loginActions.goLogin, navigation, userName, userPwd);
-    const handlerUseUnaryAction = useUnaryAction(loginActions.handleTurboModuleOne, 100, "");
+    const handlerUseUnaryAction = useAction(loginActions.handleTurboModuleOne);
     const handlerUseBinaryAction = useBinaryAction(loginActions.handleTurboModuleTwo, 100);
     const handlerUseObjectKeyAction = useObjectKeyAction(loginActions.handleTurboModuleThree, "key");
-    const dispatch = useDispatch();
 
     const isShowLoading = useLoadingStatus("login");
 
@@ -23,11 +23,7 @@ const Login = (props: any) => {
     };
 
     const handleTurboModuleOne = () => {
-        if (!isShowLoading) {
-            handlerUseUnaryAction(false);
-        } else {
-            ToastAndroid.show("已经loading", 500);
-        }
+        handlerUseUnaryAction();
     };
 
     const handleTurboModuleTwo = () => {
@@ -40,11 +36,12 @@ const Login = (props: any) => {
 
     const handleTurboModuleFour = () => {
         // Error console.error( );
-        e.message;
     };
 
+    console.log(`重新渲染isShowLoading-->` + isShowLoading);
     return (
         <View style={styles.mainBody}>
+            {isShowLoading ? <LoadingComponent /> : null}
             <TextInput
                 style={styles.inputStyle}
                 placeholder="请输入账户"

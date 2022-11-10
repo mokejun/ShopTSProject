@@ -8,26 +8,12 @@
  * @format
  */
 import {RootState} from "../config/RootState";
-import {Interval, Loading, loadingAction, Log, Module, register, SagaGenerator, showLoading, useLoadingStatus} from "core-native/src";
+import {delay, Interval, Loading, Log, Module, Mutex, register, SagaGenerator, showLoading, useLoadingStatus} from "core-native/src";
 import {app} from "core-native/src/app";
 import Login from "../pages/Login";
-
-const show = () => {
-    app.store.dispatch(loadingAction(true, "login"));
-};
-const hint = () => {
-    app.store.dispatch(loadingAction(false, "login"));
-};
+import {HelloWorld} from "../hooks";
 
 class LoginModule extends Module<RootState, "login", object> {
-    // onEnter: (routeParameters: RouteParam) => SagaGenerator;
-    // onDestroy: () => SagaGenerator;
-    // onTick: (() => SagaGenerator) & TickIntervalDecoratorFlag;
-    // onAppActive: () => SagaGenerator;
-    // onAppInactive: () => SagaGenerator;
-    // onFocus: () => SagaGenerator;
-    // onBlur: () => SagaGenerator;
-
     *onEnter(routeParameters: object): SagaGenerator {
         this.logger.info({action: "", info: {test: "onEnter"}});
         console.log(`onEnter`);
@@ -59,23 +45,19 @@ class LoginModule extends Module<RootState, "login", object> {
         console.log(`onBlur`);
     }
 
-    @Loading("login")
     @Log()
+    @Loading("login")
     *goLogin(navigation: any, userName: string, pwd: string): SagaGenerator {
-        console.log(`showLoading-->` + showLoading(this.rootState, "login"));
+        this.testHelloWorld();
+        yield delay(5000);
         this.setState({userName, pwd});
         navigation?.push("TaskList");
     }
 
-    *handleTurboModuleOne(a: number, b: string, c: boolean): SagaGenerator {
-        // Loading("login");
-        // show();
-        // console.log(`showLoading-->` + showLoading(this.rootState, "login"));
-        // console.log(`handleTurboModuleOne-->${a}-->${b}-->${c}`);
-        // setTimeout(() => {
-        //     hint();
-        //     console.log(`showLoading-->` + showLoading(this.rootState, "login"));
-        // }, 2000);
+    @Mutex()
+    *handleTurboModuleOne(): SagaGenerator {
+        console.log(`handleTurboModuleOne--点击了`);
+        yield delay(5000);
     }
 
     *handleTurboModuleTwo(a: number, b: string, c: boolean): SagaGenerator {
@@ -85,9 +67,14 @@ class LoginModule extends Module<RootState, "login", object> {
     *handleTurboModuleThree(data: {key: number}): SagaGenerator {
         console.log(`handleTurboModuleThree-->${data.key}`);
     }
+
+    @HelloWorld("这个是一个普通的hook函数方法")
+    testHelloWorld() {
+        console.log(`---testHelloWorld---`);
+    }
 }
 
-const module = register(new LoginModule("login", {userName: "sven", pwd: "1222"}));
+const module = register(new LoginModule("login", {userName: "", pwd: ""}));
 const LoginView = module.attachLifecycle(Login);
 export const loginActions = module.getActions();
 export default LoginView;

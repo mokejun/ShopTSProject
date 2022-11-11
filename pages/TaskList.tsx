@@ -4,43 +4,39 @@ import {toJS} from "mobx";
 import {useDispatch, useStore, connect, useSelector} from "react-redux";
 import {taskListActions} from "../module/TaskListView";
 import {RootState} from "../config/RootState";
+import {async, useAction, useLoadingStatus, useObjectKeyAction} from "core-native/src";
+import LoadingComponent from "./LoadingComponent";
 
 const TaskList = (props: any) => {
     const {navigation} = props;
-    const dispatch = useDispatch();
+    const url = "https://wwww.baidu.com";
+    const method = "GET";
     const serverData = useSelector((state: RootState) => state.app.taskList.list);
+    const dispatch = useDispatch();
+    const requestInfo = useAction(taskListActions.request, url, method);
 
-    const handleItemClick = (item: any, isAdd: boolean) => {
-        dispatch(taskListActions.goDetail(navigation, item, isAdd));
-    };
+    const isShowLoading = useLoadingStatus("taskList");
 
-    const goCart = () => {
-        dispatch(taskListActions.goCart(navigation));
+    useEffect(() => {
+        const request = async () => {
+            requestInfo();
+        };
+        request();
+    }, []);
+
+    const handleItemClick = (item: any) => {
+        dispatch(taskListActions.goDetail(navigation, item));
     };
 
     const _renderItem = ({item, index}: {item: any; index: number}) => {
         return (
-            <TouchableOpacity style={index % 2 == 1 ? styles.itemStyle : styles.itemOtherStyle}>
+            <TouchableOpacity
+                style={index % 2 == 1 ? styles.itemStyle : styles.itemOtherStyle}
+                onPress={() => {
+                    handleItemClick(item);
+                }}
+            >
                 <Text style={{color: "red"}}>{item?.name}</Text>
-                <Text style={{color: "black"}}>{item?.count}</Text>
-                <View style={{flexDirection: "row"}}>
-                    <TouchableHighlight
-                        style={styles.addButtonStyle}
-                        onPress={() => {
-                            handleItemClick(item, true);
-                        }}
-                    >
-                        <Text style={styles.buttonTextStyle}>添加</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight
-                        style={styles.addButtonStyle}
-                        onPress={() => {
-                            handleItemClick(item, false);
-                        }}
-                    >
-                        <Text style={styles.buttonTextStyle}>减少</Text>
-                    </TouchableHighlight>
-                </View>
             </TouchableOpacity>
         );
     };
@@ -49,11 +45,12 @@ const TaskList = (props: any) => {
 
     return (
         <View style={styles.mainBody}>
+            {isShowLoading ? <LoadingComponent content="请求数据.." /> : null}
             <Text>项目列表</Text>
             <FlatList keyExtractor={_keyExtractor} data={toJS(serverData)} renderItem={_renderItem} />
-            <TouchableHighlight style={styles.buttonStyle} onPress={goCart}>
+            {/* <TouchableHighlight style={styles.buttonStyle} onPress={goCart}>
                 <Text style={styles.buttonTextStyle}>去购物车</Text>
-            </TouchableHighlight>
+            </TouchableHighlight> */}
         </View>
     );
 };

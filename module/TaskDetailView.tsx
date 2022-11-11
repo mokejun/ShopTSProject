@@ -13,7 +13,16 @@ import TaskDetail from "../pages/TaskDetail";
 
 class TaskDetailModule extends Module<RootState, "taskDetail", object> {
     *onEnter(routeParameters: object): SagaGenerator {
+        console.log(`TaskDetailModule-->onEnter`);
         this.setState({detail: routeParameters});
+    }
+
+    *goCart(navigation: any): SagaGenerator {
+        navigation?.push("Cart");
+    }
+
+    *onFocus(): SagaGenerator {
+        console.log(`TaskDetailModule-->onFocus`);
     }
 }
 

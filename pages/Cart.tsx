@@ -12,8 +12,8 @@ const Cart = (props: any) => {
     const serverData = useSelector((state: RootState) => state.app.cart.list);
 
     const handleItemClick = (item: any, isAdd: boolean) => {
-        dispatch(cartActions.goDetail(navigation, item, isAdd));
-        dispatch(taskListActions.goDetail(navigation, item, isAdd));
+        dispatch(cartActions.handlerNum(item, isAdd));
+        // dispatch(taskListActions.goDetail(navigation, item, isAdd));
     };
 
     const _renderItem = ({item, index}: {item: any; index: number}) => {

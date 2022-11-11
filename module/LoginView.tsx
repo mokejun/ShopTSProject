@@ -15,16 +15,14 @@ import {HelloWorld} from "../hooks";
 
 class LoginModule extends Module<RootState, "login", object> {
     *onEnter(routeParameters: object): SagaGenerator {
-        this.logger.info({action: "", info: {test: "onEnter"}});
         console.log(`onEnter`);
-        // console.log(`onEnter this.state().userName-->${this.state.userName}`);
     }
 
     *onDestroy(): SagaGenerator {
         console.log(`onDestory`);
     }
 
-    @Interval(5)
+    @Interval(10)
     *onTick(): SagaGenerator {
         console.log(`onTick-->` + new Date().toTimeString());
     }
@@ -48,8 +46,9 @@ class LoginModule extends Module<RootState, "login", object> {
     @Log()
     @Loading("login")
     *goLogin(navigation: any, userName: string, pwd: string): SagaGenerator {
+        console.log(`userName-->${userName}  pwd--->${pwd}`);
         this.testHelloWorld();
-        yield delay(5000);
+        yield delay(2000);
         this.setState({userName, pwd});
         navigation?.push("TaskList");
     }
@@ -57,15 +56,7 @@ class LoginModule extends Module<RootState, "login", object> {
     @Mutex()
     *handleTurboModuleOne(): SagaGenerator {
         console.log(`handleTurboModuleOne--点击了`);
-        yield delay(5000);
-    }
-
-    *handleTurboModuleTwo(a: number, b: string, c: boolean): SagaGenerator {
-        console.log(`handleTurboModuleTwo-->${a}-->${b}-->${c}`);
-    }
-
-    *handleTurboModuleThree(data: {key: number}): SagaGenerator {
-        console.log(`handleTurboModuleThree-->${data.key}`);
+        yield delay(2000);
     }
 
     @HelloWorld("这个是一个普通的hook函数方法")

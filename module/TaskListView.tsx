@@ -8,7 +8,7 @@
  * @format
  */
 import {RootState} from "../config/RootState";
-import {ajax, Module, register, SagaGenerator} from "core-native/src";
+import {ajax, delay, Loading, Module, Mutex, register, SagaGenerator} from "core-native/src";
 import TaskList from "../pages/TaskList";
 
 const employees = [
@@ -22,31 +22,20 @@ const employees = [
 
 class TaskListModule extends Module<RootState, "taskList", object> {
     *onEnter(routeParameters: object): SagaGenerator {
+        console.log(`onEnter`);
+    }
+
+    // @Loading("taskList")
+    *request(url: string, method: string): SagaGenerator {
+        console.log(`request url-->${url} method-->${method}`);
+        // yield delay(2000);
         this.setState({list: employees});
     }
 
-    *request(): SagaGenerator {
-        console.log(`TaskListModule-->` + JSON.stringify(this.state));
-    }
-
-    *goDetail(navigation: any, item: any, isAdd: boolean): SagaGenerator {
-        // navigation?.push("TaskDetail", item);
-        const list = this.state;
-        const newList = this.state.list?.map((data: any, index: number) => {
-            if (data?.id === item?.id) {
-                return {
-                    ...data,
-                    count: isAdd ? data.count + 1 : data.count === 0 ? 0 : data.count - 1,
-                };
-            }
-            return data;
-        });
-        this.setState({list: newList});
-        this.postLike(item);
-    }
-
-    async postLike(item: any): Promise<void> {
-        await ajax("POST", "https://wwww.baidu.com", {}, {events: item}, true);
+    @Mutex()
+    *goDetail(navigation: any, item: any): SagaGenerator {
+        console.log(`goDetail item name-->` + item?.name);
+        navigation?.push("TaskDetail", item);
     }
 
     *goCart(navigation: any): SagaGenerator {

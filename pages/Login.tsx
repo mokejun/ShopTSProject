@@ -13,8 +13,6 @@ const Login = (props: any) => {
 
     const action = useAction(loginActions.goLogin, navigation, userName, userPwd);
     const handlerUseUnaryAction = useAction(loginActions.handleTurboModuleOne);
-    const handlerUseBinaryAction = useBinaryAction(loginActions.handleTurboModuleTwo, 100);
-    const handlerUseObjectKeyAction = useObjectKeyAction(loginActions.handleTurboModuleThree, "key");
 
     const isShowLoading = useLoadingStatus("login");
 
@@ -26,22 +24,9 @@ const Login = (props: any) => {
         handlerUseUnaryAction();
     };
 
-    const handleTurboModuleTwo = () => {
-        handlerUseBinaryAction("99", true);
-    };
-
-    const handleTurboModuleThree = () => {
-        handlerUseObjectKeyAction(99);
-    };
-
-    const handleTurboModuleFour = () => {
-        // Error console.error( );
-    };
-
-    console.log(`重新渲染isShowLoading-->` + isShowLoading);
     return (
         <View style={styles.mainBody}>
-            {isShowLoading ? <LoadingComponent /> : null}
+            {isShowLoading ? <LoadingComponent content="登陆中.." /> : null}
             <TextInput
                 style={styles.inputStyle}
                 placeholder="请输入账户"
@@ -73,16 +58,7 @@ const Login = (props: any) => {
                 <Text style={styles.buttonTextStyle}>登陆</Text>
             </TouchableHighlight>
             <TouchableHighlight style={styles.buttonStyle} onPress={handleTurboModuleOne}>
-                <Text style={styles.buttonTextStyle}>测试 turbo module1</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.buttonStyle} onPress={handleTurboModuleTwo}>
-                <Text style={styles.buttonTextStyle}>测试 turbo module2</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.buttonStyle} onPress={handleTurboModuleThree}>
-                <Text style={styles.buttonTextStyle}>测试 turbo module3</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.buttonStyle} onPress={handleTurboModuleFour}>
-                <Text style={styles.buttonTextStyle}>发一些错误出去</Text>
+                <Text style={styles.buttonTextStyle}>测试 turbo module</Text>
             </TouchableHighlight>
         </View>
     );

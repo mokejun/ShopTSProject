@@ -1,16 +1,64 @@
-import React from "react";
-import {View, Text, StyleSheet} from "react-native";
-import {connect, useSelector} from "react-redux";
+import {useLoadingStatus} from "core-native/src";
+import {app} from "core-native/src/app";
+import React, {useEffect, useState} from "react";
+import {View, Text, StyleSheet, TouchableHighlight} from "react-native";
+import {connect, useDispatch, useSelector, useStore} from "react-redux";
 import {RootState} from "../config/RootState";
+import {cartActions} from "../module/CartView";
+import {taskDetailActions} from "../module/TaskDetailView";
+import LoadingComponent from "./LoadingComponent";
 
 const TaskDetail = (props: any) => {
-    const {dispatch, navigation} = props;
+    const {navigation} = props;
+    const dispatch = useDispatch();
     const detail = useSelector((state: RootState) => state.app.taskDetail.detail);
+    const isShowLoading = useLoadingStatus("cart");
+    const cartDetail = useSelector((state: RootState) => {
+        return state.app.cart.list;
+    });
+    const temp = useSelector((state: RootState) => {
+        if (cartDetail && cartDetail.length > 0) {
+            return cartDetail?.filter((data: any) => {
+                return data.id === detail.id;
+            });
+        }
+    });
+
+    const handleItemClick = (item: any, isAdd: boolean) => {
+        dispatch(cartActions.handlerNum(item, isAdd));
+    };
+
+    const goCart = () => {
+        dispatch(taskDetailActions.goCart(navigation));
+    };
 
     return (
         <View style={styles.mainBody}>
+            {isShowLoading ? <LoadingComponent content="请求数据.." /> : null}
             <Text>项目列表详情</Text>
             <Text>{`name-->${detail?.name}`}</Text>
+            <Text style={{color: "black"}}>{temp && temp[0]?.count ? temp[0]?.count : 0}</Text>
+            <View style={{flexDirection: "row"}}>
+                <TouchableHighlight
+                    style={styles.addButtonStyle}
+                    onPress={() => {
+                        handleItemClick(detail, true);
+                    }}
+                >
+                    <Text style={styles.buttonTextStyle}>添加</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                    style={styles.addButtonStyle}
+                    onPress={() => {
+                        handleItemClick(detail, false);
+                    }}
+                >
+                    <Text style={styles.buttonTextStyle}>减少</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.addButtonStyle} onPress={goCart}>
+                    <Text style={styles.buttonTextStyle}>购物车</Text>
+                </TouchableHighlight>
+            </View>
         </View>
     );
 };
@@ -49,7 +97,6 @@ const styles = StyleSheet.create({
     },
     buttonTextStyle: {
         color: "#FFFFFF",
-        paddingVertical: 10,
         fontSize: 16,
     },
     inputStyle: {
@@ -85,5 +132,15 @@ const styles = StyleSheet.create({
         height: 80,
         width: 250,
         backgroundColor: "white",
+    },
+    addButtonStyle: {
+        backgroundColor: "#7DE24E",
+        borderWidth: 0,
+        color: "#FFFFFF",
+        borderColor: "#7DE24E",
+        height: 30,
+        alignItems: "center",
+        borderRadius: 30,
+        width: 60,
     },
 });

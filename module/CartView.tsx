@@ -9,26 +9,41 @@
  */
 import {toJS} from "mobx";
 import {RootState} from "../config/RootState";
-import {Module, register, SagaGenerator} from "core-native/src";
+import {delay, Loading, Log, Module, Mutex, register, SagaGenerator} from "core-native/src";
 import Cart from "../pages/Cart";
 
 class CartModule extends Module<RootState, "cart", object> {
     *onEnter(routeParameters: object): SagaGenerator {
-        this.setState({list: toJS(routeParameters)});
+        // this.setState({list: toJS(routeParameters)});
     }
 
-    *goDetail(navigation: any, item: any, isAdd: boolean): SagaGenerator {
-        const list = this.state;
-        const newList = this.state.list?.map((data: any, index: number) => {
-            if (data?.id === item?.id) {
-                return {
-                    ...data,
-                    count: isAdd ? data.count + 1 : data.count === 0 ? 0 : data.count - 1,
-                };
-            }
-            return data;
+    @Mutex()
+    @Log()
+    @Loading("cart")
+    *handlerNum(item: any, isAdd: boolean): SagaGenerator {
+        yield delay(1000);
+        console.log(`handlerNum-->` + isAdd);
+        const index = this.state.list?.findIndex((data: any) => {
+            return data?.id === item?.id;
         });
-        this.setState({list: newList});
+        if (index == -1) {
+            const newItem = {
+                ...item,
+                count: isAdd ? item.count + 1 : item.count === 0 ? 0 : item.count - 1,
+            };
+            this.setState({list: [...this.state.list, newItem]});
+        } else {
+            const newList = this.state.list?.map((data: any, index: number) => {
+                if (data?.id === item?.id) {
+                    return {
+                        ...data,
+                        count: isAdd ? data.count + 1 : data.count === 0 ? 0 : data.count - 1,
+                    };
+                }
+                return data;
+            });
+            this.setState({list: newList});
+        }
     }
 }
 

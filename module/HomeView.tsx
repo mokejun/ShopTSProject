@@ -8,7 +8,7 @@
  * @format
  */
 import {RootState} from "../config/RootState";
-import {Module, register, SagaGenerator} from "core-native/src";
+import {Module, register} from "core-native/src";
 import Home from "../pages/Home";
 
 class AppModule extends Module<RootState, "home", object> {}

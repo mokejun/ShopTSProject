@@ -8,7 +8,7 @@
  * @format
  */
 import {RootState} from "../config/RootState";
-import {Module, register, SagaGenerator} from "core-native/src";
+import {Module, Mutex, register, SagaGenerator} from "core-native/src";
 import TaskDetail from "../pages/TaskDetail";
 
 class TaskDetailModule extends Module<RootState, "taskDetail", object> {
@@ -17,6 +17,7 @@ class TaskDetailModule extends Module<RootState, "taskDetail", object> {
         this.setState({detail: routeParameters});
     }
 
+    @Mutex()
     *goCart(navigation: any): SagaGenerator {
         navigation?.push("Cart");
     }

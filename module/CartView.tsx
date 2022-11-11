@@ -7,16 +7,11 @@
  *
  * @format
  */
-import {toJS} from "mobx";
 import {RootState} from "../config/RootState";
 import {delay, Loading, Log, Module, Mutex, register, SagaGenerator} from "core-native/src";
 import Cart from "../pages/Cart";
 
 class CartModule extends Module<RootState, "cart", object> {
-    *onEnter(routeParameters: object): SagaGenerator {
-        // this.setState({list: toJS(routeParameters)});
-    }
-
     @Mutex()
     @Log()
     @Loading("cart")

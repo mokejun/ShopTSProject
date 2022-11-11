@@ -9,7 +9,6 @@
  */
 import {RootState} from "../config/RootState";
 import {delay, Interval, Loading, Log, Module, Mutex, register, SagaGenerator, showLoading, useLoadingStatus} from "core-native/src";
-import {app} from "core-native/src/app";
 import Login from "../pages/Login";
 import {HelloWorld} from "../hooks";
 
@@ -45,8 +44,8 @@ class LoginModule extends Module<RootState, "login", object> {
 
     @Log()
     @Loading("login")
+    @Mutex()
     *goLogin(navigation: any, userName: string, pwd: string): SagaGenerator {
-        console.log(`userName-->${userName}  pwd--->${pwd}`);
         this.testHelloWorld();
         yield delay(2000);
         this.setState({userName, pwd});

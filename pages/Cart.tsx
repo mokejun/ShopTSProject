@@ -1,19 +1,17 @@
-import React, {PureComponent, useEffect, useState} from "react";
-import {View, Text, TextInput, Button, ToastAndroid, Keyboard, StyleSheet, Dimensions, Touchable, TouchableOpacity, FlatList, TouchableHighlight} from "react-native";
+import React from "react";
+import {View, Text, StyleSheet, TouchableOpacity, FlatList, TouchableHighlight} from "react-native";
 import {toJS} from "mobx";
-import {useDispatch, useStore, connect, useSelector} from "react-redux";
-import {taskListActions} from "../module/TaskListView";
+import {useSelector} from "react-redux";
 import {RootState} from "../config/RootState";
 import {cartActions} from "../module/CartView";
+import {useBinaryAction} from "core-native/src";
 
 const Cart = (props: any) => {
-    const {navigation} = props;
-    const dispatch = useDispatch();
     const serverData = useSelector((state: RootState) => state.app.cart.list);
+    const handlerNum = useBinaryAction(cartActions.handlerNum);
 
     const handleItemClick = (item: any, isAdd: boolean) => {
-        dispatch(cartActions.handlerNum(item, isAdd));
-        // dispatch(taskListActions.goDetail(navigation, item, isAdd));
+        handlerNum(item, isAdd);
     };
 
     const _renderItem = ({item, index}: {item: any; index: number}) => {

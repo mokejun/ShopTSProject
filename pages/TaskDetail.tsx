@@ -1,8 +1,7 @@
-import {useLoadingStatus} from "core-native/src";
-import {app} from "core-native/src/app";
-import React, {useEffect, useState} from "react";
+import {useAction, useBinaryAction, useLoadingStatus, useUnaryAction} from "core-native/src";
+import React from "react";
 import {View, Text, StyleSheet, TouchableHighlight} from "react-native";
-import {connect, useDispatch, useSelector, useStore} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState} from "../config/RootState";
 import {cartActions} from "../module/CartView";
 import {taskDetailActions} from "../module/TaskDetailView";
@@ -10,8 +9,9 @@ import LoadingComponent from "./LoadingComponent";
 
 const TaskDetail = (props: any) => {
     const {navigation} = props;
-    const dispatch = useDispatch();
     const detail = useSelector((state: RootState) => state.app.taskDetail.detail);
+    const handlerNum = useBinaryAction(cartActions.handlerNum);
+    const goCart = useUnaryAction(taskDetailActions.goCart);
     const isShowLoading = useLoadingStatus("cart");
     const cartDetail = useSelector((state: RootState) => {
         return state.app.cart.list;
@@ -25,11 +25,11 @@ const TaskDetail = (props: any) => {
     });
 
     const handleItemClick = (item: any, isAdd: boolean) => {
-        dispatch(cartActions.handlerNum(item, isAdd));
+        handlerNum(item, isAdd);
     };
 
-    const goCart = () => {
-        dispatch(taskDetailActions.goCart(navigation));
+    const handerCartItemClick = () => {
+        goCart(navigation);
     };
 
     return (
@@ -55,7 +55,7 @@ const TaskDetail = (props: any) => {
                 >
                     <Text style={styles.buttonTextStyle}>减少</Text>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.addButtonStyle} onPress={goCart}>
+                <TouchableHighlight style={styles.addButtonStyle} onPress={handerCartItemClick}>
                     <Text style={styles.buttonTextStyle}>购物车</Text>
                 </TouchableHighlight>
             </View>

@@ -1,8 +1,6 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {View, Text, TextInput, Button, ToastAndroid, Keyboard, StyleSheet, Dimensions, Touchable, TouchableOpacity, TouchableHighlight} from "react-native";
-import {useDispatch, useStore, connect, useSelector} from "react-redux";
-import {RootState} from "../config/RootState";
-import {useAction, useUnaryAction, useBinaryAction, useObjectKeyAction, useLoadingStatus, showLoading, loadingAction, Loading} from "core-native/src";
+import React, {useState} from "react";
+import {View, Text, TextInput, Keyboard, StyleSheet, TouchableHighlight} from "react-native";
+import {useAction, useBinaryAction, useLoadingStatus} from "core-native/src";
 import {loginActions} from "../module/LoginView";
 import LoadingComponent from "./LoadingComponent";
 
@@ -11,17 +9,17 @@ const Login = (props: any) => {
     const [userName, setUserName] = useState("");
     const [userPwd, setUserPwd] = useState("");
 
-    const action = useAction(loginActions.goLogin, navigation, userName, userPwd);
-    const handlerUseUnaryAction = useAction(loginActions.handleTurboModuleOne);
+    const loginAction = useBinaryAction(loginActions.goLogin, navigation);
+    const turboMoudleAction = useAction(loginActions.handleTurboModuleOne);
 
     const isShowLoading = useLoadingStatus("login");
 
     const handleSubmitPress = () => {
-        action();
+        loginAction(userName, userPwd);
     };
 
     const handleTurboModuleOne = () => {
-        handlerUseUnaryAction();
+        turboMoudleAction();
     };
 
     return (
@@ -32,7 +30,7 @@ const Login = (props: any) => {
                 placeholder="请输入账户"
                 value={userName}
                 placeholderTextColor={"#b3b3b3"}
-                onChangeText={userName => {
+                onChangeText={(userName: string) => {
                     setUserName(userName);
                 }}
                 autoCapitalize="none"
@@ -45,7 +43,7 @@ const Login = (props: any) => {
                 placeholder="请输入密码"
                 value={userPwd}
                 placeholderTextColor={"#b3b3b3"}
-                onChangeText={userPwd => {
+                onChangeText={(userPwd: string) => {
                     setUserPwd(userPwd);
                 }}
                 onSubmitEditing={Keyboard.dismiss}

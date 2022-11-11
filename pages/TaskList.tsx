@@ -1,10 +1,10 @@
-import React, {PureComponent, useEffect, useState} from "react";
-import {View, Text, TextInput, Button, ToastAndroid, Keyboard, StyleSheet, Dimensions, Touchable, TouchableOpacity, FlatList, TouchableHighlight} from "react-native";
+import React, {useEffect} from "react";
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from "react-native";
 import {toJS} from "mobx";
-import {useDispatch, useStore, connect, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {taskListActions} from "../module/TaskListView";
 import {RootState} from "../config/RootState";
-import {async, useAction, useLoadingStatus, useObjectKeyAction} from "core-native/src";
+import {useAction, useBinaryAction, useLoadingStatus} from "core-native/src";
 import LoadingComponent from "./LoadingComponent";
 
 const TaskList = (props: any) => {
@@ -12,20 +12,17 @@ const TaskList = (props: any) => {
     const url = "https://wwww.baidu.com";
     const method = "GET";
     const serverData = useSelector((state: RootState) => state.app.taskList.list);
-    const dispatch = useDispatch();
-    const requestInfo = useAction(taskListActions.request, url, method);
+    const goDetail = useBinaryAction(taskListActions.goDetail);
+    const requestAction = useAction(taskListActions.request, url, method);
+
+    useEffect(() => {
+        requestAction();
+    }, []);
 
     const isShowLoading = useLoadingStatus("taskList");
 
-    useEffect(() => {
-        const request = async () => {
-            requestInfo();
-        };
-        request();
-    }, []);
-
     const handleItemClick = (item: any) => {
-        dispatch(taskListActions.goDetail(navigation, item));
+        goDetail(item, navigation);
     };
 
     const _renderItem = ({item, index}: {item: any; index: number}) => {
@@ -48,9 +45,6 @@ const TaskList = (props: any) => {
             {isShowLoading ? <LoadingComponent content="请求数据.." /> : null}
             <Text>项目列表</Text>
             <FlatList keyExtractor={_keyExtractor} data={toJS(serverData)} renderItem={_renderItem} />
-            {/* <TouchableHighlight style={styles.buttonStyle} onPress={goCart}>
-                <Text style={styles.buttonTextStyle}>去购物车</Text>
-            </TouchableHighlight> */}
         </View>
     );
 };

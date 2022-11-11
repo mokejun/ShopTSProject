@@ -8,7 +8,7 @@
  * @format
  */
 import {RootState} from "../config/RootState";
-import {ajax, delay, Loading, Module, Mutex, register, SagaGenerator} from "core-native/src";
+import {Module, Mutex, register, SagaGenerator} from "core-native/src";
 import TaskList from "../pages/TaskList";
 
 const employees = [
@@ -25,22 +25,18 @@ class TaskListModule extends Module<RootState, "taskList", object> {
         console.log(`onEnter`);
     }
 
-    // @Loading("taskList")
     *request(url: string, method: string): SagaGenerator {
         console.log(`request url-->${url} method-->${method}`);
-        // yield delay(2000);
+        this.setState({list: employees});
+    }
+
+    *onFocus(): SagaGenerator {
         this.setState({list: employees});
     }
 
     @Mutex()
-    *goDetail(navigation: any, item: any): SagaGenerator {
-        console.log(`goDetail item name-->` + item?.name);
+    *goDetail(item: any, navigation: any): SagaGenerator {
         navigation?.push("TaskDetail", item);
-    }
-
-    *goCart(navigation: any): SagaGenerator {
-        const newList = this.state.list?.filter((data: any) => data?.count > 0);
-        navigation?.push("Cart", newList);
     }
 }
 

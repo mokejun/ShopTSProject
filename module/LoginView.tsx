@@ -11,6 +11,7 @@ import {RootState} from "../config/RootState";
 import {delay, Interval, Loading, Log, Module, Mutex, register, SagaGenerator, showLoading, useLoadingStatus} from "core-native/src";
 import Login from "../pages/Login";
 import {HelloWorld} from "../hooks";
+import RTNHelloWorld from "rtn-helloworld/js/NativeHelloWorld";
 
 class LoginModule extends Module<RootState, "login", object> {
     *onEnter(routeParameters: object): SagaGenerator {
@@ -47,15 +48,14 @@ class LoginModule extends Module<RootState, "login", object> {
     @Mutex()
     *goLogin(navigation: any, userName: string, pwd: string): SagaGenerator {
         this.testHelloWorld();
-        yield delay(2000);
+        yield delay(500);
         this.setState({userName, pwd});
         navigation?.push("TaskList");
     }
 
     @Mutex()
     *handleTurboModuleOne(): SagaGenerator {
-        console.log(`handleTurboModuleOne--点击了`);
-        yield delay(2000);
+        console.log(`print-->${RTNHelloWorld?.print("hello world!!!")}`);
     }
 
     @HelloWorld("这个是一个普通的hook函数方法")

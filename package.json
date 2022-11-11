@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
+        "fast_android": "react-native run-android --active-arch-only",
         "android": "react-native run-android",
         "ios": "react-native run-ios",
         "start": "react-native start",
@@ -28,6 +29,7 @@
         "react-redux": "7.2.8",
         "redux": "4.1.2",
         "redux-saga": "1.1.3",
+        "rtn-helloworld": "./RTNHelloWorld",
         "tslib": "2.4.0"
     },
     "devDependencies": {

@@ -16,7 +16,7 @@ class CartModule extends Module<RootState, "cart", object> {
     @Log()
     @Loading("cart")
     *handlerNum(item: any, isAdd: boolean): SagaGenerator {
-        yield delay(1000);
+        yield delay(300);
         console.log(`handlerNum-->` + isAdd);
         const index = this.state.list?.findIndex((data: any) => {
             return data?.id === item?.id;

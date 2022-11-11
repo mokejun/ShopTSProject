@@ -28,7 +28,7 @@ const TaskList = (props: any) => {
     const _renderItem = ({item, index}: {item: any; index: number}) => {
         return (
             <TouchableOpacity
-                style={index % 2 == 1 ? styles.itemStyle : styles.itemOtherStyle}
+                style={index % 2 === 1 ? styles.itemStyle : styles.itemOtherStyle}
                 onPress={() => {
                     handleItemClick(item);
                 }}

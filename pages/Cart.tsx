@@ -16,7 +16,7 @@ const Cart = (props: any) => {
 
     const _renderItem = ({item, index}: {item: any; index: number}) => {
         return (
-            <TouchableOpacity style={index % 2 == 1 ? styles.itemStyle : styles.itemOtherStyle}>
+            <TouchableOpacity style={index % 2 === 1 ? styles.itemStyle : styles.itemOtherStyle}>
                 <Text style={{color: "red"}}>{item?.name}</Text>
                 <Text style={{color: "black"}}>{item?.count}</Text>
                 <View style={{flexDirection: "row"}}>

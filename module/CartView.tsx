@@ -21,7 +21,7 @@ class CartModule extends Module<RootState, "cart", object> {
         const index = this.state.list?.findIndex((data: any) => {
             return data?.id === item?.id;
         });
-        if (index == -1) {
+        if (index === -1) {
             const newItem = {
                 ...item,
                 count: isAdd ? item.count + 1 : item.count === 0 ? 0 : item.count - 1,
